@@ -1,0 +1,65 @@
+Homework 3 Report
+
+I wrote make_parser in terms of make_matcher because they are very similar in
+function. They both try to descend the grammar rules tree in search of a
+fragment that matches one of the rules of the starting symbol. The matcher is
+looking for a prefix that matches one of the rules in the alternative list for
+the grammar's starting symbol and will pass the remaining parts of the fragment
+through an acceptor and return whatever the acceptor returns. The only
+difference from matcher to parser is that the parser is a special case of the
+matcher. A fragment is a valid fragment of a grammar if it matches with a rule
+and matches exactly. In other words, it needs to match and the suffix must be
+empty. So make_parser is essentially the same as matcher with the acceptor
+function being accepting only empty suffixes. The only big difference is that
+instead of returning what the acceptor returns, we need to build the tree. As
+matcher is essentially a search tool to find the nonterminals and terminals
+that make up the fragment that match the grammar. The only change I made to the
+helper functions for make_matcher is that when a fragment matches a rule, it
+returns the rule reached appended to a list of the rest of  the other matched
+rules. In other words, the parser helper function returns a list of the tree
+nodes reached by the fragment. I then took this list and built the tree using
+the list of nodes in a separate function.
+
+The biggest and most apparent weakness of my implementation is that it
+struggles with highly recursive grammars. With grammars where the rules of
+nonterminals contain that same nonterminal itself, the stack grows to be very
+large and often results in a stack overflow error. My implementation handles
+these cases fine if the stack does not grow too large. As seen in my test cases
+submitted with this project, when the highly recursive rule is lower on the
+levels of priority, it handles the case just find and matches well. However,
+if we move the recursive rule to the top of the priority, the stack will grow
+too large.
+Below is my test case of a sentence in Spanish grammar:
+| Sentence -> 
+		[[N Object; N Action; N Object];
+                 [N Object; N Action]; 
+                 [N Object; N Verb];
+                 [N Sentence; T ","; N Sentence]
+                 ]
+With this alternative list for sentence, my implementation works fine. When
+passed two sentences separated by a comma, it builds the right tree and accepts
+the fragment. However, when we make my matcher/parser attempt to match the
+[N Sentence; T ","; N Sentence] rule first as follows:
+| Sentence ->
+                [[N Sentence; T ","; N Sentence];
+                 [N Object; N Action; N Object];
+                 [N Object; N Action];
+                 [N Object; N Verb]
+                 ]
+This causes a stack overflow error because searching for two sentences within a
+sentence causes the stack to grow to way too large since my function is
+recursive. Even when passed a simple fragment with an Object and Verb, we still
+get a stack overflow error. This tells us that there is a point in which
+grammars become too complex and too recursive to be able to be handled by this
+implementation and will become unreliable.
+
+The implementation also has trouble if there's a cycle in the grammar. As it
+essentially represents grammars as trees, when there is an instance such as
+nonterminal A has a rule containing nonterminal B and B has a rule containing
+nonterminal C and C has a rule containing nonterminal A again. This creates a
+cycle in the grammar tree and the matcher or parser will keep on looping
+through these nonterminals, never reaching a terminal symbol and therefore
+looping infinitely and exhausting the stack. This is unlike the previous
+inconsistency mentioned where there is a point where grammars become too
+complex and the stack grows too big, in this case, if any grammar has a cycle,
+matcher and parser will never finish.

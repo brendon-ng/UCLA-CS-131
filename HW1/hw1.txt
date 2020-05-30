@@ -1,0 +1,43 @@
+HW1
+1) subset a b
+   I implemented this using the for_all function in the List library.
+   It lets us check every element in thelist a against all the elements in list
+   b.
+
+2) equal_sets a b
+   Sets are equal if and only if a is a subset of b and b is a subset of a
+   So I used the previous function and anded both conditions together.
+
+3) set_union a b
+   You cannot simply union sets with the :: operator. You must use an element
+   of the list on the lhs and a list on the rhs. So I had to iterate through
+   the elements of one list which led me to pick recursion.
+   Weaknesses: with an extremely large list, the stack gets to be huge.
+
+4) set_intersection a b
+   The intersection of two sets is just one of the sets with elements cut out
+   of it, the one's that are not in the other set. So this led me to choose the
+   filter function from the List library which will keep the elements that
+   match a criteria. 
+
+5) set_diff a b
+   This is the exact opposite of the previous problem,nSo I negated
+   the criteria
+
+6) computed_fixed_point eq f x
+   This problem of a fixed point iteration is recursiv
+   I considered using a pattern matching at first but the problem was simpler
+   it could be implemented with a simple if else statement that calls the
+   function recursively until f x = x.
+
+7) filter_reachable g
+   I was having trouble w type errors and treating arguments as correct types
+   From the beginning, I thought of this problem like a graph, starting at the
+   root node and recusing down and adding the names of the nonterminal nodes
+   reach to a list of reachable rules. After this recusive task, I filter
+   the rules list in g to only those elements that are in my reachable list.
+   To ensure all parameters are being treated with correct types, I use
+   pattern matching, so functions use the proper type.
+   Weaknesses: I used a lot of helper functions added w recursion, the stack
+   can get large. The code is hard to follow and debug step by step.
+
