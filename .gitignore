@@ -4,3 +4,6 @@ HW3/*.class
 HW3/report.docx
 Project/*.txt
 Project/config.py
+Project/__pycache__
+Project/report.docx
+Project/project.tgz

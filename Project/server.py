@@ -28,7 +28,8 @@ MAX_MESSAGE = int(1e6)
 def record(log):
     print(log)
     log_file.write(log+"\n")
-
+    log_file.flush()
+    
 class Server:
     def __init__(self, name):
         self.name = name
